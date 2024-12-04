@@ -4,20 +4,16 @@ namespace App\Model;
 
 use Nette;
 
-
-
 /**
- * @author 
+ * @author
  */
-class TypSpravceOblasti extends Table
-{
+class TypSpravceOblasti extends Table {
     /**
     * @var string
     */
     protected $tableName = 'TypSpravceOblasti';
 
-    public function getTypySpravcuOblasti()
-    {
+    public function getTypySpravcuOblasti() {
         return($this->findAll());
     }
 }

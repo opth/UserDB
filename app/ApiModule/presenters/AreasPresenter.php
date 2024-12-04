@@ -4,21 +4,18 @@ namespace App\ApiModule\Presenters;
 
 use Nette\Application\Responses\JsonResponse;
 
-class AreasPresenter extends ApiPresenter
-{
+class AreasPresenter extends ApiPresenter {
     private $oblast;
 
-    function __construct(\App\Model\Oblast $oblast)
-    {
+    public function __construct(\App\Model\Oblast $oblast) {
         $this->oblast = $oblast;
     }
 
-    public function actionDefault()
-    {
+    public function actionDefault() {
         $oblasti = [];
         $oblastiData = $this->oblast->getSeznamOblasti();
         foreach ($oblastiData as $idoblast => $o) {
-            if($o['id'] < 0) {
+            if ($o['id'] < 0) {
                 continue;
             }
 
@@ -45,7 +42,7 @@ class AreasPresenter extends ApiPresenter
             $spravci = [];
             foreach ($o->related('SpravceOblasti.Oblast_id')->where('SpravceOblasti.od < NOW() AND (SpravceOblasti.do IS NULL OR SpravceOblasti.do > NOW())') as $spravceMtm) {
                 $spravce = $spravceMtm->ref('Uzivatel', 'Uzivatel_id');
-                if($spravce['systemovy']) {
+                if ($spravce['systemovy']) {
                     continue;
                 }
 
@@ -59,6 +56,6 @@ class AreasPresenter extends ApiPresenter
             }
             $oblasti[$idoblast]['admins'] = $spravci;
         }
-        $this->sendResponse( new JsonResponse($oblasti) );
+        $this->sendResponse(new JsonResponse($oblasti));
     }
 }

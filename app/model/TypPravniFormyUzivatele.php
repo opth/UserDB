@@ -4,20 +4,16 @@ namespace App\Model;
 
 use Nette;
 
-
-
 /**
- * @author 
+ * @author
  */
-class TypPravniFormyUzivatele extends Table
-{
+class TypPravniFormyUzivatele extends Table {
     /**
     * @var string
     */
     protected $tableName = 'TypPravniFormyUzivatele';
 
-    public function getTypyPravniFormyUzivatele()
-    {
+    public function getTypyPravniFormyUzivatele() {
         return($this->findAll());
     }
 }

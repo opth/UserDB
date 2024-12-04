@@ -5,21 +5,19 @@ namespace App\Model;
 use Nette;
 
 /**
- * @author 
+ * @author
  */
-class OdchoziPlatba extends Table
-{
+class OdchoziPlatba extends Table {
     /**
     * @var string
     */
     protected $tableName = 'OdchoziPlatba';
 
-    public function getOdchoziPlatby()
-    {
+    public function getOdchoziPlatby() {
         return($this->findAll());
     }
-    
+
     public function getOdchoziPlatba($id) {
-	   return($this->find($id));
+        return($this->find($id));
     }
 }

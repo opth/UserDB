@@ -2,14 +2,13 @@
 
 namespace App\Model;
 
-use Nette,
-    GuzzleHttp\Client;
+use Nette;
+use GuzzleHttp\Client;
 
 /**
  * VnejsiScanner connector
  */
-class VnejsiScanner
-{
+class VnejsiScanner {
     /**
     * @var string
     */
@@ -37,7 +36,7 @@ class VnejsiScanner
             return([]);
         }
 
-        if($r->getStatusCode() != 200) {
+        if ($r->getStatusCode() != 200) {
             return([]);
         }
 
@@ -49,7 +48,7 @@ class VnejsiScanner
         $date = "";
 
         while ($line !== false) {
-            if(preg_match('/^#/', $line)) {
+            if (preg_match('/^#/', $line)) {
                 $this->scanDate = \DateTime::createFromFormat('\#Y.m.d\_H.i', $line);
                 $line = strtok($separator);
                 continue;
@@ -66,7 +65,7 @@ class VnejsiScanner
     }
 
     public function getScan() {
-        if(!$this->scanData) {
+        if (!$this->scanData) {
             $this->downloadScan();
         }
 
@@ -74,7 +73,7 @@ class VnejsiScanner
     }
 
     public function getScanDate() {
-        if(!$this->scanDate) {
+        if (!$this->scanDate) {
             $this->downloadScan();
         }
 
@@ -86,16 +85,16 @@ class VnejsiScanner
 
         $out = [];
 
-        foreach($scan as $ip => $ports) {
+        foreach ($scan as $ip => $ports) {
             $validni = false;
 
-            foreach($filtr as $port) {
-                if(in_array($port, $ports)) {
+            foreach ($filtr as $port) {
+                if (in_array($port, $ports)) {
                     $validni = true;
                 }
             }
 
-            if($validni) {
+            if ($validni) {
                 $out[$ip] = $ports;
             }
         }

@@ -2,17 +2,16 @@
 
 namespace App\Services;
 
-use Nette,
-    App\Model,
-    PdfResponse\PdfResponse,
-    Tracy\Debugger,
-    Nette\Mail\Message;
+use Nette;
+use App\Model;
+use PdfResponse\PdfResponse;
+use Tracy\Debugger;
+use Nette\Mail\Message;
 
 /**
- * @author 
+ * @author
  */
-class MailService
-{
+class MailService {
     private $uzivatel;
     private $mailer;
 
@@ -20,12 +19,11 @@ class MailService
         $this->uzivatel = $uzivatel;
         $this->mailer = $mailer;
     }
-    
-    public function sendConfirmationRequest($uzivatel, $so, $link): void
-    {
+
+    public function sendConfirmationRequest($uzivatel, $so, $link): void {
         $fromAddress = 'hkfree.org oblast '.$uzivatel->Ap->Oblast->jmeno.' <oblast'.$uzivatel->Ap->Oblast->id.'@hkfree.org>';
-        
-        $mail = new Message;
+
+        $mail = new Message();
         $mail->setFrom($fromAddress)
             ->addTo($uzivatel->email)
             ->setSubject('Žádost o potvrzení registrace člena hkfree.org z.s. - UID '.$uzivatel->id)
@@ -35,18 +33,16 @@ class MailService
                             'souhlas s Pravidly sítě a souhlas se zpracováním osobních údajů pro potřeby evidence člena zapsaného spolku. '.
                             'Veškeré dokumenty naleznete na stránkách <a href="http://www.hkfree.org">www.hkfree.org</a> v sekci Základní dokumenty.<br><br>'.
                             'S pozdravem hkfree.org z.s.');
-        if (!empty($uzivatel->email2))
-        {
+        if (!empty($uzivatel->email2)) {
             $mail->addTo($uzivatel->email2);
         }
         $this->mailer->send($mail);
     }
 
-    public function sendConfirmationRequestCopy($uzivatel, $so): void
-    {
+    public function sendConfirmationRequestCopy($uzivatel, $so): void {
         $fromAddress = 'hkfree.org oblast '.$uzivatel->Ap->Oblast->jmeno.' <oblast'.$uzivatel->Ap->Oblast->id.'@hkfree.org>';
-        
-        $mailso = new Message;
+
+        $mailso = new Message();
         $mailso->setFrom($fromAddress)
             ->addTo($so->email)
             ->setSubject('kopie - Žádost o potvrzení registrace člena hkfree.org z.s. - UID '.$uzivatel->id)
@@ -56,8 +52,7 @@ class MailService
                             'souhlas s Pravidly sítě a souhlas se zpracováním osobních údajů pro potřeby evidence člena zapsaného spolku. '.
                             'Veškeré dokumenty naleznete na stránkách <a href="http://www.hkfree.org">www.hkfree.org</a> v sekci Základní dokumenty.<br><br>'.
                             'S pozdravem hkfree.org z.s.');
-        if (!empty($so->email2))
-        {
+        if (!empty($so->email2)) {
             $mailso->addTo($so->email2);
         }
 
@@ -68,15 +63,14 @@ class MailService
         //\Tracy\Debugger::barDump($mailso);exit();
         $this->mailer->send($mailso);
     }
-  
-    public function mailPdf(PdfResponse $pdf, $uzivatel, $request, $response, $userid): void
-    {
+
+    public function mailPdf(PdfResponse $pdf, $uzivatel, $request, $response, $userid): void {
         $so = $this->uzivatel->getUzivatel($userid);
 
         $fromAddress = 'hkfree.org oblast '.$uzivatel->Ap->Oblast->jmeno.' <oblast'.$uzivatel->Ap->Oblast->id.'@hkfree.org>';
         //\Tracy\Debugger::barDump($fromAddress);
 
-        $mail = new Message;
+        $mail = new Message();
         $mail->setFrom($fromAddress)
             ->addTo($uzivatel->email)
             ->addTo($so->email)
@@ -92,14 +86,13 @@ class MailService
         $this->mailer->send($mail);
     }
 
-    public function sendPlannedUserNotificationEmail($idUzivatele, $actuser): void
-    {
+    public function sendPlannedUserNotificationEmail($idUzivatele, $actuser): void {
         $newUser = $this->uzivatel->getUzivatel($idUzivatele);
         $so = $this->uzivatel->getUzivatel($actuser);
 
         $fromAddress = 'hkfree.org oblast '.$newUser->Ap->Oblast->jmeno.' <oblast'.$newUser->Ap->Oblast->id.'@hkfree.org>';
 
-        $mailso = new Message;
+        $mailso = new Message();
         $mailso->setFrom($fromAddress)
             ->addTo($so->email)
             ->setSubject('NOTIFIKACE - Nový plánovaný člen - UID '.$newUser->id)
@@ -111,8 +104,7 @@ class MailService
                             'Bude pravděpodobně následovat připojení od techniků<br><br>'.
                             'Prosím zkontrolujte si adresu přípojného místa a pokud máte pro techniky nějaké informace tak je kontaktujte.<br><br>'.
                             'S pozdravem UserDB');
-        if (!empty($so->email2))
-        {
+        if (!empty($so->email2)) {
             $mailso->addTo($so->email2);
         }
 

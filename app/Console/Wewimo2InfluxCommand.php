@@ -10,23 +10,19 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Wewimo2InfluxCommand extends Command
-{
-
+class Wewimo2InfluxCommand extends Command {
     /** @var AP */
     private $ap;
     /** @var Wewimo */
     private $wewimo;
 
-    public function __construct(AP $ap, Wewimo $wewimo)
-    {
+    public function __construct(AP $ap, Wewimo $wewimo) {
         parent::__construct();
         $this->ap = $ap;
         $this->wewimo = $wewimo;
     }
 
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('app:wewimo2influx')
             ->setDescription('Ziskat Wewimo data ze vsech sledovanych RB a zapsat do InfluxDB (Grafany)');
     }
@@ -89,8 +85,7 @@ class Wewimo2InfluxCommand extends Command
         }
     }
 
-    private function addFloatField(&$fields, $dstField, $station, $srcField)
-    {
+    private function addFloatField(&$fields, $dstField, $station, $srcField) {
         $val = $station[$srcField] ?? null;
         if (!is_null($val)) {
             $fields[$dstField] = floatval($val);

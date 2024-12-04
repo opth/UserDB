@@ -7,20 +7,18 @@ use App\Model;
 /**
  * Sprava presenter.
  */
-class SpravaPresenter extends BasePresenter
-{
+class SpravaPresenter extends BasePresenter {
     private $uzivatel;
     private $ap;
 
     private $googleMapsApiKey;
 
-    function __construct(Model\Uzivatel $uzivatel, Model\AP $ap) {
-    	$this->uzivatel = $uzivatel;
+    public function __construct(Model\Uzivatel $uzivatel, Model\AP $ap) {
+        $this->uzivatel = $uzivatel;
         $this->ap = $ap;
     }
 
-    public function setGoogleMapsApiKey($googleMapsApiKey)
-    {
+    public function setGoogleMapsApiKey($googleMapsApiKey) {
         $this->googleMapsApiKey = $googleMapsApiKey;
     }
 
@@ -30,9 +28,8 @@ class SpravaPresenter extends BasePresenter
         die();
     }
 
-    public function renderNastroje()
-    {
-    	$this->template->canApproveCC = $this->getUser()->isInRole('VV');
+    public function renderNastroje() {
+        $this->template->canApproveCC = $this->getUser()->isInRole('VV');
         $this->template->canSeeMailList = $this->getUser()->isInRole('VV');
         $this->template->canCreateArea = $this->getUser()->isInRole('VV') || $this->getUser()->isInRole('TECH');
         $this->template->canSeePayments = $this->getUser()->isInRole('VV') || $this->getUser()->isInRole('TECH');
@@ -42,8 +39,7 @@ class SpravaPresenter extends BasePresenter
         $this->redirect('Uzivatel:show', array('id'=>$id));
     }
 
-    public function renderMapa()
-    {
+    public function renderMapa() {
         $aps = $this->ap->findAll();
         $povoleneAp = [];
         foreach ($aps as $ap) {
@@ -55,7 +51,7 @@ class SpravaPresenter extends BasePresenter
         $uzivatele = $uzivatele->where('Ap_id', $povoleneAp); // Ap_id IN (..., ..., ...)
         $uzivatele = $uzivatele->fetchAll();
         $output = []; // klic = kombinace latitude + longitude
-        foreach($uzivatele as $uzivatel) {
+        foreach ($uzivatele as $uzivatel) {
             $key = "{$uzivatel->latitude},{$uzivatel->longitude}";
             if (!isset($output[$key])) {
                 // na danych souradnicich jeste zadny bod v poli $output neni

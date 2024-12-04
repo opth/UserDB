@@ -10,14 +10,11 @@ namespace App\Presenters;
 
 use App\Model;
 
-
-class WewimoPresenter extends BasePresenter
-{
+class WewimoPresenter extends BasePresenter {
     private $wewimo;
     private $ap;
 
-    function __construct(Model\Wewimo $wewimo, Model\AP $ap)
-    {
+    public function __construct(Model\Wewimo $wewimo, Model\AP $ap) {
         $this->wewimo = $wewimo;
         $this->ap = $ap;
     }
@@ -48,15 +45,23 @@ class WewimoPresenter extends BasePresenter
                     if (array_key_exists('xx-user-nick', $station)) {
                         $station['xx-mac-host'] = '('.$station['xx-user-nick'].')';
                     } else {
-                        if ($station['xx-mac-host']) $station['xx-mac-host'] = '***';
+                        if ($station['xx-mac-host']) {
+                            $station['xx-mac-host'] = '***';
+                        }
                     }
                     if (array_key_exists('xx-last-ip-user-nick', $station)) {
                         $station['xx-last-ip-host'] = '('.$station['xx-last-ip-user-nick'].')';
                     } else {
-                        if ($station['xx-last-ip-host']) $station['xx-last-ip-host'] = '***';
+                        if ($station['xx-last-ip-host']) {
+                            $station['xx-last-ip-host'] = '***';
+                        }
                     }
-                    if ($station['x-identity']) $station['x-identity'] = '***';
-                    if ($station['radio-name']) $station['radio-name'] = '***';
+                    if ($station['x-identity']) {
+                        $station['x-identity'] = '***';
+                    }
+                    if ($station['radio-name']) {
+                        $station['radio-name'] = '***';
+                    }
                     $station['mac-address'] = $station['x-anonymous-mac-address'];
                 }
             }
@@ -91,8 +96,7 @@ class WewimoPresenter extends BasePresenter
         $this->fetchWewimo($id, $ip);
     }
 
-    private function resolveLink($linkStruct)
-    {
+    private function resolveLink($linkStruct) {
         if (is_array($linkStruct)) {
             return $this->link($linkStruct['presenter'], array('id' => $linkStruct['id'])) . $linkStruct['anchor'];
         } else {

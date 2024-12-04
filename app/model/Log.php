@@ -2,14 +2,13 @@
 
 namespace App\Model;
 
-use Nette,
-    Nette\Utils\Html;
+use Nette;
+use Nette\Utils\Html;
 
 /**
  * @author
  */
-class Log extends Table
-{
+class Log extends Table {
     private $typZarizeni;
 
     private $request;
@@ -29,20 +28,17 @@ class Log extends Table
     */
     protected $tableName = 'Log';
 
-    public function getLogyUzivatele($uid)
-    {
+    public function getLogyUzivatele($uid) {
         $logy = $this->findAll()->where("tabulka = ?", "Uzivatel")->where("tabulka_id = ?", $uid)->order("datum DESC, sloupec DESC");
         return($logy);
     }
 
-    public function getLogyAP($Apid)
-    {
+    public function getLogyAP($Apid) {
         $logy = $this->findAll()->where("tabulka = ?", "Ap")->where("tabulka_id = ?", $Apid)->order("datum DESC, sloupec DESC");
         return($logy);
     }
 
-    public function translateJmeno($jmeno)
-    {
+    public function translateJmeno($jmeno) {
         $slovnikUzivatel = array(
             "Ap_id" => "AP",
             "jmeno" => "jméno",
@@ -85,7 +81,7 @@ class Log extends Table
 
         $slovnik = array_merge($slovnikUzivatel, $slovnikIpAdresa);
 
-        if(isset($slovnik[$jmeno])) {
+        if (isset($slovnik[$jmeno])) {
             return($slovnik[$jmeno]);
         } else {
             return($jmeno);
@@ -102,11 +98,10 @@ class Log extends Table
      * @param string $type Typ objektu pro který zjišťujeme - ip / subnet
      * @return array pole ipId=>ipAdresa
      */
-    public function getAdvancedzLogu(array $ids, $type = "ip")
-    {
+    public function getAdvancedzLogu(array $ids, $type = "ip") {
         $names = array();
         foreach ($ids as $id) {
-            if($type == "ip") {
+            if ($type == "ip") {
                 $names[] = "IPAdresa[".$id."].ip_adresa";
             } elseif ($type == "subnet") {
                 $names[] = "Subnet[".$id."].subnet";
@@ -116,9 +111,8 @@ class Log extends Table
         $logy = $this->findAll()->where("sloupec", $names)->order("datum ASC");
 
         $out = array();
-        foreach($logy as $log)
-        {
-            if($type == "ip") {
+        foreach ($logy as $log) {
+            if ($type == "ip") {
                 preg_match("/^ipadresa\[(\d+)\]\.ip_adresa/i", $log->sloupec, $matches);
             } elseif ($type == "subnet") {
                 preg_match("/^subnet\[(\d+)\]\.subnet/i", $log->sloupec, $matches);
@@ -126,11 +120,11 @@ class Log extends Table
 
             $id = $matches[1];
 
-            if($log->puvodni_hodnota !== null) {
+            if ($log->puvodni_hodnota !== null) {
                 $out[$id] = $log->puvodni_hodnota;
             }
 
-            if($log->nova_hodnota !== null) {
+            if ($log->nova_hodnota !== null) {
                 $out[$id] = $log->nova_hodnota;
             }
         }
@@ -138,13 +132,12 @@ class Log extends Table
         return($out);
     }
 
-    public function logujInsert($data, $sloupecPrefix, &$log)
-    {
-        foreach($data as $key => $value) {
-            if(!empty($value)) {
+    public function logujInsert($data, $sloupecPrefix, &$log) {
+        foreach ($data as $key => $value) {
+            if (!empty($value)) {
                 $log[] = array(
                     'sloupec'=>$sloupecPrefix.'.'.$key,
-                    'puvodni_hodnota'=>NULL,
+                    'puvodni_hodnota'=>null,
                     'nova_hodnota'=>$value,
                     'akce'=>'I'
                 );
@@ -152,14 +145,13 @@ class Log extends Table
         }
     }
 
-    public function logujUpdate($staraData, $novaData, $sloupecPrefix, &$log)
-    {
-        foreach($novaData as $key => $value) {
-            $isSet = isset($staraData[$key]) || ($staraData[$key] == NULL);
-            if(!($isSet && $value == $staraData[$key])) {
+    public function logujUpdate($staraData, $novaData, $sloupecPrefix, &$log) {
+        foreach ($novaData as $key => $value) {
+            $isSet = isset($staraData[$key]) || ($staraData[$key] == null);
+            if (!($isSet && $value == $staraData[$key])) {
                 $log[] = array(
                     'sloupec'=>$sloupecPrefix.'.'.$key,
-                    'puvodni_hodnota'=>isset($staraData[$key])?$staraData[$key]:NULL,
+                    'puvodni_hodnota'=>isset($staraData[$key]) ? $staraData[$key] : null,
                     'nova_hodnota'=>$value,
                     'akce'=>'U'
                 );
@@ -167,28 +159,27 @@ class Log extends Table
         }
     }
 
-    public function logujDelete($staraData, $sloupecPrefix, &$log)
-    {
-        foreach($staraData as $key => $value) {
-            if(!empty($value)) {
+    public function logujDelete($staraData, $sloupecPrefix, &$log) {
+        foreach ($staraData as $key => $value) {
+            if (!empty($value)) {
                 $log[] = array(
                     'sloupec'=>$sloupecPrefix.'.'.$key,
                     'puvodni_hodnota'=>$value,
-                    'nova_hodnota'=>NULL,
+                    'nova_hodnota'=>null,
                     'akce'=>'D'
                 );
             }
         }
     }
 
-    public function loguj($tabulka, $tabulka_id, $data, $uzivatel_id = null)
-    {
-        if(!is_array($data) || count($data) == 0)
+    public function loguj($tabulka, $tabulka_id, $data, $uzivatel_id = null) {
+        if (!is_array($data) || count($data) == 0) {
             return(true);
+        }
 
         // Je bezpodminecne nutne mit stejny cas pro vsechny polozky, proto se
         // vytvari uz tady a ne az triggerem v DB!
-        $ted = new Nette\Utils\DateTime;
+        $ted = new Nette\Utils\DateTime();
 
         $spolecne = array(
             'Uzivatel_id' => ($uzivatel_id !== null ? $uzivatel_id : $this->userService->getId()),
@@ -199,9 +190,8 @@ class Log extends Table
         );
 
         $toInsert = array();
-        foreach($data as $radek)
-        {
-           $toInsert[] = array_merge($radek, $spolecne);
+        foreach ($data as $radek) {
+            $toInsert[] = array_merge($radek, $spolecne);
         }
 
         return($this->insert($toInsert));

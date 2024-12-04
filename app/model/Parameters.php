@@ -7,20 +7,17 @@ use Nette;
 /**
  * App parameters.
  */
-class Parameters
-{
+class Parameters {
     /**
     * @var int
     */
     protected $clenskyPrispevek;
-    
-    public function __construct($clenskyPrispevek)
-    {
+
+    public function __construct($clenskyPrispevek) {
         $this->clenskyPrispevek = $clenskyPrispevek;
-    }   
-    
-    public function getVyseClenskehoPrispevku()
-    {
+    }
+
+    public function getVyseClenskehoPrispevku() {
         return($this->clenskyPrispevek);
     }
 }

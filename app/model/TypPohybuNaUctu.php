@@ -5,17 +5,15 @@ namespace App\Model;
 use Nette;
 
 /**
- * @author 
+ * @author
  */
-class TypPohybuNaUctu extends Table
-{
+class TypPohybuNaUctu extends Table {
     /**
     * @var string
     */
     protected $tableName = 'TypPohybuNaUctu';
 
-    public function getTypPohybuNaUctu()
-    {
+    public function getTypPohybuNaUctu() {
         return($this->findAll());
     }
 }

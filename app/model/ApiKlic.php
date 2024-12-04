@@ -2,43 +2,41 @@
 
 namespace App\Model;
 
-use Nette,
-    Nette\Application\UI\Form;
+use Nette;
+use Nette\Application\UI\Form;
 
 /**
  * @author pavkriz
  */
-class ApiKlic extends Table
-{
-
+class ApiKlic extends Table {
     /**
     * @var string
     */
     protected $tableName = 'ApiKlic';
 
     public function getApiKliceTable(array $by) {
-	   return($this->findBy($by));
+        return($this->findBy($by));
     }
 
-    public function getApiKlic($id)
-    {
+    public function getApiKlic($id) {
         return($this->find($id));
     }
 
     public function deleteApiKlice(array $keys) {
-        if(count($keys)>0)
+        if (count($keys)>0) {
             return($this->delete(array('id' => $keys)));
-        else
+        } else {
             return true;
+        }
     }
 
     public function generateKey($length = 30) {
-        return substr(str_shuffle(str_repeat($x='23456789abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+        return substr(str_shuffle(str_repeat($x='23456789abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ', ceil($length/strlen($x)))), 1, $length);
     }
 
     public function getEditForm(Nette\ComponentModel\Container &$container, $form) {
         $container->addHidden('id')->setAttribute('class', 'id');
-        $klic = $container->addText('klic', 'Klíč', 20)->setAttribute('readonly','readonly')->setAttribute('class', 'klic');
+        $klic = $container->addText('klic', 'Klíč', 20)->setAttribute('readonly', 'readonly')->setAttribute('class', 'klic');
         $container->addText('plati_do', 'Platnost do')
             //->setType('date')
             ->setAttribute('class', 'datepicker platnost-do')
@@ -77,6 +75,4 @@ class ApiKlic extends Table
             return true;
         }
     }
-
-
 }

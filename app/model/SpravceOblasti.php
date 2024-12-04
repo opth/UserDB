@@ -2,24 +2,20 @@
 
 namespace App\Model;
 
-use Nette,
-    Nette\Application\UI\Form,
-    Nette\Utils\Html;
-
-
+use Nette;
+use Nette\Application\UI\Form;
+use Nette\Utils\Html;
 
 /**
  * @author
  */
-class SpravceOblasti extends Table
-{
+class SpravceOblasti extends Table {
     /**
     * @var string
     */
     protected $tableName = 'SpravceOblasti';
 
-    public function getOblastiSpravce($userID)
-    {
+    public function getOblastiSpravce($userID) {
         $OblastiSpravce = $this->findAll()->where('Uzivatel_id', $userID)->where('od < NOW() AND (do IS NULL OR do > NOW())')->where('Oblast_id IS NOT NULL')->order("Oblast.jmeno")->fetchAll();
         $out = array();
         foreach ($OblastiSpravce as $key => $value) {
@@ -28,33 +24,28 @@ class SpravceOblasti extends Table
         return($out);
     }
 
-    public function getTypPravaPopisek($typPrava, $idOblasti)
-    {
-        if ($idOblasti == NULL || empty($idOblasti)) {
+    public function getTypPravaPopisek($typPrava, $idOblasti) {
+        if ($idOblasti == null || empty($idOblasti)) {
             return($typPrava);
         } else {
             return($typPrava."-".$idOblasti);
         }
     }
 
-    public function getUserRole($userid, $ap)
-    {
+    public function getUserRole($userid, $ap) {
         $existujici = $this->findAll()->where('Uzivatel_id = ?', $userid)->where('od < NOW() AND (do IS NULL OR do > NOW())')->where('Oblast_id = ?', $ap)->fetch();
-        if($existujici)
-        {
+        if ($existujici) {
             return $existujici->ref('TypSpravceOblasti', 'TypSpravceOblasti_id')->text;
         }
         return null;
     }
 
-    public function getPravo($id)
-    {
+    public function getPravo($id) {
         return($this->find($id));
     }
 
-    public function deletePrava(array $rights)
-    {
-		if (count($rights) > 0) {
+    public function deletePrava(array $rights) {
+        if (count($rights) > 0) {
             return($this->delete(array('id' => $rights)));
         } else {
             return true;
@@ -62,7 +53,7 @@ class SpravceOblasti extends Table
     }
 
     public function getRightsForm(&$right, $typRole, $obl) {
-		$right->addHidden('Uzivatel_id')->setAttribute('class', 'id ip');
+        $right->addHidden('Uzivatel_id')->setAttribute('class', 'id ip');
         $right->addHidden('id')->setAttribute('class', 'id ip');
 
         $right->addSelect('TypSpravceOblasti_id', 'Oprávnění', $typRole)
@@ -92,13 +83,11 @@ class SpravceOblasti extends Table
         $right->addCheckbox('override', '!!! OPRAVA !!!');
     }
 
-    public function getSO()
-    {
+    public function getSO() {
         return($this->getSpravce(1));
     }
 
-    public function getZSO()
-    {
+    public function getZSO() {
         return($this->getSpravce(2));
     }
 
@@ -108,7 +97,7 @@ class SpravceOblasti extends Table
         ->where('od < NOW()')
         ->where('do IS NULL OR do > NOW()');
 
-        if($ignorujSystemove) {
+        if ($ignorujSystemove) {
             return($q->where('Uzivatel.systemovy', 0));
         }
 

@@ -2,15 +2,14 @@
 
 namespace App\Model;
 
-use Nette,
-    GuzzleHttp\Client,
-    Tracy\Dumper;
+use Nette;
+use GuzzleHttp\Client;
+use Tracy\Dumper;
 
 /**
  * Status creator
  */
-class Status
-{
+class Status {
     public const PROBLEM_MRTVA = 0;
     public const PROBLEM_LOSS_HIGH = 1;
     public const PROBLEM_LOSS_LOW = 2;
@@ -31,8 +30,7 @@ class Status
      */
     private $ipadresa;
 
-    public function __construct(Sojka $sojka, Oblast $oblast, IPAdresa $ipadresa)
-    {
+    public function __construct(Sojka $sojka, Oblast $oblast, IPAdresa $ipadresa) {
         $this->sojka = $sojka;
         $this->oblast = $oblast;
         $this->ipadresa = $ipadresa;
@@ -63,47 +61,46 @@ class Status
 
         foreach ($this->oblast->getSeznamOblasti() as $oblast) {
             // oblasti s ID mensi nez nula jsou technicke, ty ignorujeme
-            if($oblast->id < 0) {
+            if ($oblast->id < 0) {
                 continue;
             }
 
             $ap_out = array();
             foreach ($oblast->related('Ap.Oblast_id') as $ap) {
-
                 $problemy = array();
                 foreach ($ap->related('IPAdresa.Ap_id') as $ip) {
                     // IP se nepinga, ignorujeme ji
-                    if(!isset($vysledek_pingu[$ip->ip_adresa])) {
+                    if (!isset($vysledek_pingu[$ip->ip_adresa])) {
                         continue;
                     }
 
                     $ping_ip = $vysledek_pingu[$ip->ip_adresa];
 
                     // IP uz sojka nevidela vic jak $lookback sekund, asi to neni aktualni vypadek a nezajima nas
-                    if($ping_ip["time_lastpong"] < $tmp_lookback_date) {
+                    if ($ping_ip["time_lastpong"] < $tmp_lookback_date) {
                         continue;
                     }
 
                     // IP je mrtva
-                    if(!$ping_ip["alive"]) {
+                    if (!$ping_ip["alive"]) {
                         $problemy[] = array($ip, $this::PROBLEM_MRTVA, $ping_ip);
                         continue;
                     }
 
                     // IP ma velky PL, tzn je mrtva
-                    if($ping_ip["loss"] >= 0.8) {
+                    if ($ping_ip["loss"] >= 0.8) {
                         $problemy[] = array($ip, $this::PROBLEM_LOSS_HIGH, $ping_ip);
                         continue;
                     }
 
                     // IP ma maly PL, dame warning
-                    if($ping_ip["loss"] >= 0.2) {
+                    if ($ping_ip["loss"] >= 0.2) {
                         $problemy[] = array($ip, $this::PROBLEM_LOSS_LOW, $ping_ip);
                         continue;
                     }
 
                     // IP ma velky RTT, dame warning
-                    if($ping_ip["rtt"] >= 0.2) {
+                    if ($ping_ip["rtt"] >= 0.2) {
                         $problemy[] = array($ip, $this::PROBLEM_RTT, $ping_ip);
                         continue;
                     }

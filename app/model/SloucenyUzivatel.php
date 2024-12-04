@@ -2,59 +2,48 @@
 
 namespace App\Model;
 
-use Nette,
-    Nette\Application\UI\Form,
-    Nette\Utils\Html,
-    Nette\Database\Context;
-
-
+use Nette;
+use Nette\Application\UI\Form;
+use Nette\Utils\Html;
+use Nette\Database\Context;
 
 /**
- * @author 
+ * @author
  */
-class SloucenyUzivatel extends Table
-{
+class SloucenyUzivatel extends Table {
     /**
     * @var string
     */
     protected $tableName = 'SloucenyUzivatel';
 
-    public function getSlouceniExists($userID, $userID2)
-    {        
+    public function getSlouceniExists($userID, $userID2) {
         $validniZaznamy = $this->findAll()->where('Uzivatel_id', $userID)->where('slouceny_uzivatel', $userID2)->fetchAll();
         return(count($validniZaznamy)>0);
     }
-    
-    public function getIsAlreadyMaster($userID)
-    {        
+
+    public function getIsAlreadyMaster($userID) {
         $validniZaznamy = $this->findAll()->where('Uzivatel_id', $userID)->fetchAll();
         return(count($validniZaznamy)>0);
     }
-    
-    public function getIsAlreadySlave($userID)
-    {        
+
+    public function getIsAlreadySlave($userID) {
         $validniZaznamy = $this->findAll()->where('slouceny_uzivatel', $userID)->fetchAll();
         return(count($validniZaznamy)>0);
     }
-    
-    public function getMaster($userID)
-    {        
+
+    public function getMaster($userID) {
         return $this->findAll()->where('slouceny_uzivatel', $userID)->fetch()->ref('Uzivatel', 'Uzivatel_id');
     }
-    
-    public function getSlaves($userID)
-    {        
-        return $this->findAll()->where('Uzivatel_id', $userID)->fetchPairs('id','slouceny_uzivatel');
-    }
-    
-    public function getSlouceni($slID)
-    {
-        return($this->find($slID));
-    }
-    
-    public function getAll()
-    {
-      return($this->findAll());
+
+    public function getSlaves($userID) {
+        return $this->findAll()->where('Uzivatel_id', $userID)->fetchPairs('id', 'slouceny_uzivatel');
     }
 
+    public function getSlouceni($slID) {
+        return($this->find($slID));
+    }
+
+    public function getAll() {
+        return($this->findAll());
+    }
 }

@@ -2,17 +2,15 @@
 
 namespace App\Model;
 
-use Nette,
-    DateInterval,
-    Nette\Database\Context,
-    Nette\Utils\Random;
-
+use Nette;
+use DateInterval;
+use Nette\Database\Context;
+use Nette\Utils\Random;
 
 /**
  * @author
  */
-class AplikaceLog extends Table
-{
+class AplikaceLog extends Table {
     /**
      * @var string
      */
@@ -30,18 +28,16 @@ class AplikaceLog extends Table
     }
 
 
-    public function log($action, $data = array())
-    {
+    public function log($action, $data = array()) {
         return($this->insert(array(
             'action' => $action,
             'ip' => $this->request->getRemoteAddress(),
-            'time' => new Nette\Utils\DateTime,
+            'time' => new Nette\Utils\DateTime(),
             'data' => json_encode($data)
         )));
     }
 
-    public function getLogy()
-    {
+    public function getLogy() {
         return($this->findAll());
     }
 }

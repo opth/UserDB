@@ -4,20 +4,16 @@ namespace App\Model;
 
 use Nette;
 
-
-
 /**
- * @author 
+ * @author
  */
-class TypClenstvi extends Table
-{
+class TypClenstvi extends Table {
     /**
     * @var string
     */
     protected $tableName = 'TypClenstvi';
 
-    public function getTypyClenstvi()
-    {
+    public function getTypyClenstvi() {
         return($this->findAll());
     }
 }

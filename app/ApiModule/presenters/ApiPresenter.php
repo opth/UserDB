@@ -2,14 +2,13 @@
 
 namespace App\ApiModule\Presenters;
 
-use Nette\Application\Responses\JsonResponse,
-    Nette\Application\Responses\TextResponse,
-    App\Model;
+use Nette\Application\Responses\JsonResponse;
+use Nette\Application\Responses\TextResponse;
+use App\Model;
 use Nette\Http\Response;
 use Nette\Utils\DateTime;
 
-class ApiPresenter extends \Nette\Application\UI\Presenter
-{
+class ApiPresenter extends \Nette\Application\UI\Presenter {
     /** @var \App\Model\ApiKlic */
     protected $apiKlicModel;
 
@@ -26,26 +25,22 @@ class ApiPresenter extends \Nette\Application\UI\Presenter
     // no checks against AP-id and/or module restrictions is done regarding the API key
     protected $alwaysAllowedActions = ['Api:HealthCheck'];
 
-    public function injectHttpResponse(\Nette\Http\Response $httpResponse)
-    {
+    public function injectHttpResponse(\Nette\Http\Response $httpResponse) {
         $this->httpResponse = $httpResponse;
     }
 
-    public function injectHttpRequest(\Nette\Http\Request $httpRequest)
-    {
+    public function injectHttpRequest(\Nette\Http\Request $httpRequest) {
         $this->httpRequest = $httpRequest;
     }
 
-    public function injectApiKlicModel(\App\Model\ApiKlic $apiKlicModel)
-    {
+    public function injectApiKlicModel(\App\Model\ApiKlic $apiKlicModel) {
         $this->apiKlicModel = $apiKlicModel;
     }
 
     /*
      * Called by \Nette\Application\UI\Presenter!
      */
-    public function checkRequirements($element): void
-    {
+    public function checkRequirements($element): void {
         // due to CORS preflight test, we have to respond 200 OK (not 401) to OPTIONS request
         if ($this->httpRequest->getMethod() == 'OPTIONS') {
             $this->handleOptionsMethod();
@@ -55,7 +50,7 @@ class ApiPresenter extends \Nette\Application\UI\Presenter
         if (!array_key_exists('PHP_AUTH_USER', $_SERVER)) {
             $this->sendAuthRequired('Missing HTTP basic username');
             return;
-        } else if (!array_key_exists('PHP_AUTH_PW', $_SERVER)) {
+        } elseif (!array_key_exists('PHP_AUTH_PW', $_SERVER)) {
             $this->sendAuthRequired('Missing HTTP basic password');
             return;
         }
@@ -80,7 +75,7 @@ class ApiPresenter extends \Nette\Application\UI\Presenter
                 }
 
                 // Check if the API key has restricted presenter, if no, allow
-                if(!$keyRec->presenter) {
+                if (!$keyRec->presenter) {
                     parent::checkRequirements($element);
                     return;
                 }
@@ -111,7 +106,7 @@ class ApiPresenter extends \Nette\Application\UI\Presenter
     protected function forceMethod($method) {
         if ($this->httpRequest->getMethod() != $method) {
             $this->httpResponse->setCode(Response::S405_METHOD_NOT_ALLOWED);
-            $this->sendResponse( new JsonResponse(['result' => 'METHOD_NOT_ALLOWED: Use http method ' . $method]) );
+            $this->sendResponse(new JsonResponse(['result' => 'METHOD_NOT_ALLOWED: Use http method ' . $method]));
         }
     }
 
@@ -122,12 +117,12 @@ class ApiPresenter extends \Nette\Application\UI\Presenter
     protected function sendForbidden($reason) {
         //throw new \Nette\Application\ForbiddenRequestException;
         $this->httpResponse->setCode(Response::S403_FORBIDDEN);
-        $this->sendResponse( new JsonResponse(['result' => 'FORBIDDEN: '.$reason]) );
+        $this->sendResponse(new JsonResponse(['result' => 'FORBIDDEN: '.$reason]));
     }
 
     protected function sendAuthRequired($reason) {
         $this->httpResponse->setCode(Response::S401_UNAUTHORIZED);
         $this->httpResponse->addHeader('WWW-Authenticate', 'Basic realm="UserDB API"');
-        $this->sendResponse( new JsonResponse(['result' => 'UNAUTHORIZED: '.$reason]) );
+        $this->sendResponse(new JsonResponse(['result' => 'UNAUTHORIZED: '.$reason]));
     }
 }
